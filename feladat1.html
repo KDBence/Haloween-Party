@@ -8,45 +8,49 @@
 </head>
 <body>
   <form id="form" class="word-form">
-    <p id="message"></p>
+    <p id="message">Betöltés...</p>
     <div id="rows"></div>
-    <button type="submit" id="submit">Beküldés</button>
+    <button type="submit" id="submit" style="display:none">Beküldés</button>
   </form>
   <script src="script.js"></script>
   <script>
     const nev = requireLogin();
-    const words = feladat1LoadWords();
     const form = document.getElementById('form');
     const rows = document.getElementById('rows');
     const msg = document.getElementById('message');
+    let words = {};
 
-    function render(message) {
-      const player = feladat1LoadPlayerAnswers(nev);
-      rows.innerHTML = '';
-      msg.textContent = message || '';
-      FELADAT1_KEYS.forEach(key => {
-        const row = document.createElement('div');
-        row.className = 'word-row';
-        const label = document.createElement('label');
-        label.htmlFor = key;
-        label.textContent = words[key] + ':';
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.id = key;
-        input.name = key;
-        input.placeholder = 'Írd be a szót';
-        input.required = true;
-        if (player) {
-          input.value = player[key] || '';
-          input.readOnly = true;
-        }
-        row.append(label, input);
-        rows.appendChild(row);
-      });
-      document.getElementById('submit').style.display = player ? 'none' : '';
+    async function render(message) {
+      try {
+        const player = await feladat1LoadPlayerAnswers(nev);
+        msg.textContent = message || '';
+        rows.innerHTML = '';
+        FELADAT1_KEYS.forEach(key => {
+          const row = document.createElement('div');
+          row.className = 'word-row';
+          const label = document.createElement('label');
+          label.htmlFor = key;
+          label.textContent = words[key] + ':';
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.id = key;
+          input.name = key;
+          input.placeholder = 'Írd be a szót';
+          input.required = true;
+          if (player) {
+            input.value = player[key] || '';
+            input.readOnly = true;
+          }
+          row.append(label, input);
+          rows.appendChild(row);
+        });
+        document.getElementById('submit').style.display = player ? 'none' : '';
+      } catch (err) {
+        msg.textContent = err.message;
+      }
     }
 
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
       const answers = {};
       for (const key of FELADAT1_KEYS) {
@@ -54,12 +58,17 @@
         if (v.trim() === '') return;
         answers[key] = v;
       }
-      const ok = feladat1SavePlayerAnswersOnce(nev, answers);
-      render(ok ? 'Válaszaid sikeresen mentve.'
-                : 'Már beküldted a válaszaidat, ezek nem módosíthatók.');
+      try {
+        const ok = await feladat1SavePlayerAnswersOnce(nev, answers);
+        render(ok ? 'Válaszaid sikeresen mentve.'
+                  : 'Már beküldted a válaszaidat, ezek nem módosíthatók.');
+      } catch (err) {
+        msg.textContent = err.message;
+      }
     });
 
-    render();
+    feladat1LoadWords().then(w => { words = w; render(); })
+      .catch(err => { msg.textContent = err.message; });
   </script>
 </body>
 </html>
