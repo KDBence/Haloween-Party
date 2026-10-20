@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <title>Admin</title>
+</head>
+<body>
+  <h1>Admin oldal</h1>
+  <form id="form"></form>
+  <h2>Beküldött válaszok</h2>
+  <div id="answers"></div>
+  <script src="script.js"></script>
+  <script>
+    if (requireLogin() !== 'admin') location.href = 'index.html';
+
+    const words = feladat1LoadWords();
+    const form = document.getElementById('form');
+    FELADAT1_KEYS.forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = key;
+      input.placeholder = 'Írd be a szót';
+      input.required = true;
+      input.value = words[key];
+      form.append(input, document.createElement('br'));
+    });
+    const btn = document.createElement('button');
+    btn.type = 'submit';
+    btn.textContent = 'Mentés';
+    form.appendChild(btn);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const w = {};
+      FELADAT1_KEYS.forEach(k => { w[k] = document.getElementById(k).value; });
+      feladat1SaveWords(w);
+      location.href = 'admin.html';
+    });
+
+    // Játékosok válaszai
+    const box = document.getElementById('answers');
+    const all = feladat1LoadAllAnswers();
+    const names = Object.keys(all);
+    if (!names.length) box.textContent = 'Még nincs beküldött válasz.';
+    names.forEach(k => {
+      const p = document.createElement('p');
+      p.textContent = k.slice(2) + ': ' + FELADAT1_KEYS.map(x => all[k][x]).join(', ');
+      box.appendChild(p);
+    });
+  </script>
+</body>
+</html>

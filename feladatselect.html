@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <title>Feladat kiválasztása</title>
+</head>
+<body>
+  <h1>Feladat kiválasztása</h1>
+  <h2>Neved: <span id="nev"></span></h2>
+  <div class="feladatok">
+    <div class="feladat" onclick="location.href='feladat1.html'">Szó nem kitalálás</div>
+    <div class="feladat" onclick="location.href='feladat2.html'">Feladat 2</div>
+    <div class="feladat" onclick="location.href='feladat3.html'">Feladat 3</div>
+    <div class="feladat" onclick="location.href='feladat4.html'">Feladat 4</div>
+    <div class="feladat" onclick="location.href='feladat5.html'">Feladat 5</div>
+    <div class="feladat" onclick="location.href='feladat6.html'">Feladat 6</div>
+  </div>
+  <script src="script.js"></script>
+  <script>document.getElementById('nev').textContent = requireLogin();</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+.feladatok {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.feladat {
+    border: 1px solid black;
+    width: 200px;
+    height: 200px;
+    flex: 0 0 auto;
+    color: white;
+    background-color: black;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.feladat:hover {
+    transform: translateY(-10px);
+}
+
+.word-row {
+    display: grid;
+    grid-template-columns: 110px 200px;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.word-row label {
+    overflow-wrap: anywhere;
+}

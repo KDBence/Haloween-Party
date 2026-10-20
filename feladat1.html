@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <title>Szó nem kitalálás</title>
+</head>
+<body>
+  <form id="form" class="word-form">
+    <p id="message"></p>
+    <div id="rows"></div>
+    <button type="submit" id="submit">Beküldés</button>
+  </form>
+  <script src="script.js"></script>
+  <script>
+    const nev = requireLogin();
+    const words = feladat1LoadWords();
+    const form = document.getElementById('form');
+    const rows = document.getElementById('rows');
+    const msg = document.getElementById('message');
+
+    function render(message) {
+      const player = feladat1LoadPlayerAnswers(nev);
+      rows.innerHTML = '';
+      msg.textContent = message || '';
+      FELADAT1_KEYS.forEach(key => {
+        const row = document.createElement('div');
+        row.className = 'word-row';
+        const label = document.createElement('label');
+        label.htmlFor = key;
+        label.textContent = words[key] + ':';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = key;
+        input.name = key;
+        input.placeholder = 'Írd be a szót';
+        input.required = true;
+        if (player) {
+          input.value = player[key] || '';
+          input.readOnly = true;
+        }
+        row.append(label, input);
+        rows.appendChild(row);
+      });
+      document.getElementById('submit').style.display = player ? 'none' : '';
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const answers = {};
+      for (const key of FELADAT1_KEYS) {
+        const v = document.getElementById(key).value;
+        if (v.trim() === '') return;
+        answers[key] = v;
+      }
+      const ok = feladat1SavePlayerAnswersOnce(nev, answers);
+      render(ok ? 'Válaszaid sikeresen mentve.'
+                : 'Már beküldted a válaszaidat, ezek nem módosíthatók.');
+    });
+
+    render();
+  </script>
+</body>
+</html>

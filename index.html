@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <title>Haloween party bejelentkezés</title>
+</head>
+<body>
+  <form id="login">
+    <h1>Haloween party bejelentkezés</h1>
+    <label for="nev">Név:</label>
+    <input type="text" id="nev" name="nev" required>
+    <button type="submit">Bejelentkezés</button>
+  </form>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('login').addEventListener('submit', e => {
+      e.preventDefault();
+      const nev = document.getElementById('nev').value.trim();
+      if (!nev) return;
+      sessionStorage.setItem('nev', nev);
+      location.href = nev === 'admin' ? 'admin.html' : 'feladatselect.html';
+    });
+  </script>
+</body>
+</html>
